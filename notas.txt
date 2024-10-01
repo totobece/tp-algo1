@@ -1,0 +1,39 @@
+problema ciudadesConectadas (agencia: AgenciaDeViajes, ciudad: Ciudad) : seq⟨Ciudad⟩ {
+requiere: {vuelosValidos(agencia)}
+asegura: {res no tiene elementos repetidos}
+asegura: {res contiene todas las ciudades a las que se puede llegar con un vuelo desde ciudad teniendo en cuenta los
+vuelos ofrecidos por agencia}
+asegura: {res contiene todas las ciudades a las que se puede llegar con un vuelo hacia ciudad teniendo en cuenta los
+vuelos ofrecidos por agencia}
+asegura: {res no contiene ninguna ciudad que no est´e conectada mediante vuelos directos con ciudad, teniendo en
+cuenta los vuelos ofrecidos por agencia}
+}
+
+Contexto del problema: Hay una agencia de viajes que ofrece vuelos a diferentes ciudades.
+Cada vuelo conecta una ciudad de origen con una ciudad de destino y tiene una duracion. la informacion de los vuelos esta organizada de la siguiente manera
+[(origen, destino, duracion), (origen, destino, duracion), ...]
+
+Objetivo del problema: la funcion debe devolver una lista de todas las ciudades directamente conectadas con la ciudad que se pasa como entrada. Estas conexiones pueden ser de dos tipos
+1. Ciudades a las que pueden volar desde la ciudad (ciudades de destino cuando la ciudad es origen)
+2. Ciudades desde las cuales se puede volar a la ciudad (ciudades de origen cuando la ciudad es destino)
+
+Restricciones:
+1. No debe haber ciudades repetidas en la lista resultado
+2. No puede haber ciudades en la lista que no esten directamente contectadas con la ciudad dada (ni por origen ni por destino)
+3. Todos los vuelos son vuelosValidos
+
+Ejemplo:
+Supongamos que tenemos la siguiente lista de vuelos:
+agencia = [("BsAs", "Rosario", 5.0), ("Rosario", "Cordoba", 3.5), ("Mendoza", "BsAs", 7.0)]
+ciudad = "Rosario"
+
+Para esta lista, se pueden obtener las siguientes ciudades contectadas con Rosario:
+1. Desde Rosario hacia Cordoba
+2. Hacia Rosario desde Buenos Aires
+
+Por lo tanto el resultado de la lista con las ciudades contectadas deberia ser
+
+["Rosario", "BsAs]
+
+
+
