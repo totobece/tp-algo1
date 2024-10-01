@@ -1,10 +1,9 @@
 type Ciudad = String
-
 type Duracion = Float
-
 type Vuelo = (Ciudad, Ciudad, Duracion)
 
 type AgenciaDeViajes = [Vuelo]
+
 
 vueloValido :: Vuelo -> Bool
 vueloValido (ciudadOrigen, ciudadDestino, duracionViaje) = duracionViaje > 0 && ciudadOrigen /= ciudadDestino
@@ -15,14 +14,18 @@ verificarMismoVuelo (ciudadOrigen1, ciudadDestino1, _) (ciudadOrigen2, ciudadDes
 
 sinVuelosDuplicados :: [Vuelo] -> Bool
 sinVuelosDuplicados [] = True
-sinVuelosDuplicados (v:vs) = not (vueloDuplicado v vs) && sinVuelosDuplicados vs
-                        where 
-                            vueloDuplicado :: Vuelo -> [Vuelo] -> Bool
-                            vueloDuplicado _ [] = False
-                            vueloDuplicado v1 (v2:vs) | verificarMismoVuelo v1 v2 = True
-                                                      | otherwise = vueloDuplicado v1 vs
-                            
+sinVuelosDuplicados (v:vs) = not (any(verificarMismoVuelo v) vs) && sinVuelosDuplicados vs
 
 vuelosValidos :: AgenciaDeViajes -> Bool
 vuelosValidos [] = True
 vuelosValidos (v:vs) = vueloValido v && sinVuelosDuplicados (v:vs) && vuelosValidos vs 
+
+modernizarFlota :: AgenciaDeViajes -> AgenciaDeViajes
+modernizarFlota [] = []
+modernizarFlota agencia | vuelosValidos agencia = modernizarVuelos agencia
+                        | otherwise = []
+
+
+modernizarVuelos :: AgenciaDeViajes -> AgenciaDeViajes
+modernizarVuelos [] = []
+modernizarVuelos ((origen, destino, duracion):vuelos) = (origen, destino, duracion * 0.9) : modernizarFlota vuelos

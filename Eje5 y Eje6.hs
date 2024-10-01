@@ -10,7 +10,7 @@ type AgenciaDeViajes = [Vuelo]
 
 vuelosValidos :: AgenciaDeViajes -> Bool
 vuelosValidos [] = True
-vuelosValidos (v:vs) = vueloValido v && sinVuelosDuplicados (v:vs) && vuelosValidos vs 
+vuelosValidos (v:vs) = vueloValido v && sinVuelosDuplicados (v:vs) && vuelosValidos vs
 
 vueloValido :: Vuelo -> Bool
 vueloValido (ciudadOrigen, ciudadDestino, duracionViaje) = duracionViaje > 0 && ciudadOrigen /= ciudadDestino
@@ -20,7 +20,7 @@ verificarMismoVuelo (ciudadOrigen1, ciudadDestino1, _) (ciudadOrigen2, ciudadDes
 
 sinVuelosDuplicados :: [Vuelo] -> Bool
 sinVuelosDuplicados [] = True
-sinVuelosDuplicados (v:vs) = not (any(verificarMismoVuelo v) vs) && sinVuelosDuplicados vs
+sinVuelosDuplicados (v:vs) = not (any (verificarMismoVuelo v) vs) && sinVuelosDuplicados vs
 
 ---- EJERCICIO 5 ----  
 
@@ -37,7 +37,7 @@ sinVuelosDuplicados (v:vs) = not (any(verificarMismoVuelo v) vs) && sinVuelosDup
 
 sePuedeLlegar :: AgenciaDeViajes -> Ciudad -> Ciudad -> Bool
 sePuedeLlegar vuelos origen destino
-    | vuelosValidos(vuelos) = (sePuedeLlegarDirecto vuelos origen destino) || (sePuedeLlegarEscala vuelos vuelos origen destino)
+    | vuelosValidos (vuelos) = (sePuedeLlegarDirecto vuelos origen destino) || (sePuedeLlegarEscala vuelos vuelos origen destino)
     | otherwise = False
 
 --Estas funciones determinan si existe un vuelo tal que el origen sea igual que el primer elemento de el primer vuelo y que el destino sea igual 
@@ -46,8 +46,8 @@ sePuedeLlegar vuelos origen destino
 sePuedeLlegarDirecto :: AgenciaDeViajes -> Ciudad -> Ciudad -> Bool
 sePuedeLlegarDirecto [] _ _ = False
 sePuedeLlegarDirecto (vuelo:vuelos) origen destino = (comparaPuntos vuelo origen destino) || (sePuedeLlegarDirecto vuelos origen destino)
-    where 
-        comparaPuntos :: (Vuelo) -> Ciudad -> Ciudad -> Bool
+    where
+        comparaPuntos :: Vuelo -> Ciudad -> Ciudad -> Bool
         comparaPuntos (partida,llegada,_) origen destino = (partida == origen) && (llegada == destino)
 
 --Estas funciones determinan si existe un vuelo tal que el origen sea igual que el primer elemento de un vuelo, si es igual llama a otra funcion
@@ -66,7 +66,7 @@ compararVuelosEscala  _ _ [] _ _ = False
 compararVuelosEscala  a b ((partida,llegada,_):vuelos) origen destino
     |(a == origen) && (b == partida) = compararLlegadaDestino llegada destino
     |otherwise = compararVuelosEscala a b vuelos origen destino
-    where 
+    where
         compararLlegadaDestino :: Ciudad -> Ciudad -> Bool
         compararLlegadaDestino llegada destino = llegada == destino
 
@@ -87,7 +87,7 @@ duracionDelCaminoMasRapido vuelos origen destino = calcularMinimoLista (listasDu
 
 listaDuracionVuelosDirectos :: AgenciaDeViajes -> Ciudad -> Ciudad -> [Duracion]
 listaDuracionVuelosDirectos [] _ _ = []
-listaDuracionVuelosDirectos ((partida,llegada,duracion):vuelos) origen destino 
+listaDuracionVuelosDirectos ((partida,llegada,duracion):vuelos) origen destino
     | (partida == origen) && (llegada == destino) = [duracion]
     | otherwise = listaDuracionVuelosDirectos vuelos origen destino
 
@@ -98,6 +98,5 @@ listasDuracionVuelosEscala vuelosCompletos (vuelo:vuelos) origen destino = calcu
 calcularDuracionVuelosEscala :: (Ciudad,Ciudad,Duracion) -> AgenciaDeViajes -> Ciudad -> Ciudad -> [Duracion]
 calcularDuracionVuelosEscala  _ [] _ _ = []
 calcularDuracionVuelosEscala  (partidaA,llegadaA,duracionA) ((partidaB,llegadaB,duracionB):vuelos) origen destino
-    |(partidaA == origen) && (llegadaA == partidaB) && (llegadaB == destino) = [duracionB + duracionA] 
+    |(partidaA == origen) && (llegadaA == partidaB) && (llegadaB == destino) = [duracionB + duracionA]
     |otherwise = calcularDuracionVuelosEscala (partidaA,llegadaA,duracionA) vuelos origen destino
-
