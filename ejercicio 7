@@ -3,4 +3,4 @@ puedoVolverAOrigen :: AgenciaDeViajes -> Ciudad -> Bool
 puedoVolverAOrigen [] _ = False
 puedoVolverAOrigen ((x:xs):(y:ys):(w:ws)) Ciudad | (x == head ys) == Ciudad = vuelosValidos ..
                                                  |
-                                                 | otherwise = False
+                                                 | otherwise = 
