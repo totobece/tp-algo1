@@ -1,7 +1,8 @@
 EL EJERCICIO ARRANCA EN LA LINEA 47 Y LAS EXPLICACIONES DE LAS FUNCIONES EN LA 56
 Lo subi asi porque si copian y pegan en vsc van a ver que tira algunos errores en la funcion cualEsLaCiudad pero no se bien que es o como resolver de otra manera pero yo
 creo que va por acá, creo que la aplicacion de vuelosValidos que era el problema del que hablamos ya esta resuelto pero habria que fijarse como hacer para que agencia
-y vuelo de puedoVolverAOrigen queden bien relacionados porque los errores se derivan de ahi y de la funcion que intenta resolver ese problema
+y ciudad de puedoVolverAOrigen queden bien relacionados o llevarlos a alguna forma en la que sean comparables porque los errores se derivan de ahi y de la funcion que intenta
+resolver ese problema
 
 -- ejercicio 7 (PuedoVolverAOrigen)
 --requiere {vuelosValidos(agencia)}
@@ -45,8 +46,9 @@ vuelosValidos (v:vs) = vueloValido v && sinVuelosDuplicados (v:vs) && vuelosVali
                             -- todo esto va en la misma linea -- (3era)
 ------------------------------------------------------------------------------------------------------------------------
 puedoVolverAOrigen :: AgenciaDeViajes -> Ciudad -> Bool  
+puedoVolverAOrigen [] _ = False
 puedoVolverAOrigen agencia ciudad | cualEsLaCiudad (agencia) == ciudad = existeRuta (agencia) 
-                                  | otherwise = False
+                                  |------------------?? false
 
 existeRuta :: AgenciaDeViajes -> Bool
 existeRuta ((o1,d1,_):(o2,d2,_):(o3,d3,_):vuelos) | (o1 == d2 && d1 == o2) || (d1 == o2 && d2 == o3 && d3 == o1) = vuelosValidos (existeRuta)
