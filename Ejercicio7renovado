@@ -1,0 +1,96 @@
+EL EJERCICIO ARRANCA EN LA LINEA 47 Y LAS EXPLICACIONES DE LAS FUNCIONES EN LA 56
+Lo subi asi porque si copian y pegan en vsc van a ver que tira algunos errores en la funcion cualEsLaCiudad pero no se bien que es o como resolver de otra manera pero yo
+creo que va por acá, creo que la aplicacion de vuelosValidos que era el problema del que hablamos ya esta resuelto pero habria que fijarse como hacer para que agencia
+y vuelo de puedoVolverAOrigen queden bien relacionados porque los errores se derivan de ahi y de la funcion que intenta resolver ese problema
+
+-- ejercicio 7 (PuedoVolverAOrigen)
+--requiere {vuelosValidos(agencia)}
+--asegura: {res=true <-> existe AL MENOS una ruta(directa o con mas escalas) q permita partir y volver a la misma ciudad origen teniendo
+--en cuenta los vuelos ofrecidos por la agencia}
+-----------------------------------------------
+type Ciudad = String
+type Duracion = Float
+type Vuelo = (Ciudad, Ciudad, Duracion)
+type AgenciaDeViajes = [Vuelo]
+
+vueloValido :: Vuelo -> Bool
+vueloValido (ciudadOrigen, ciudadDestino, duracionViaje) = duracionViaje > 0 && ciudadOrigen /= ciudadDestino
+
+verificarMismoVuelo :: Vuelo -> Vuelo -> Bool
+verificarMismoVuelo (ciudadOrigen1, ciudadDestino1, _) (ciudadOrigen2, ciudadDestino2, _) = ciudadOrigen1 == ciudadOrigen2 && ciudadDestino1 == ciudadDestino2
+
+sinVuelosDuplicados :: [Vuelo] -> Bool
+sinVuelosDuplicados [] = True
+sinVuelosDuplicados (v:vs) = not (any(verificarMismoVuelo v) vs) && sinVuelosDuplicados vs 
+
+vuelosValidos :: AgenciaDeViajes -> Bool
+vuelosValidos [] = True
+vuelosValidos (v:vs) = vueloValido v && sinVuelosDuplicados (v:vs) && vuelosValidos vs 
+-------------------------------------------------------------------------------------
+-- ejercicio 7
+
+-- puedoVolverAOrigen es una funcion q toma la lista de los vuelos q me ofrece la Agencia (q en este caso es nuestro 1° parametro) 
+--y toma una Ciudad (q es nuestro nuestro segundo parametro) y nos devuelve True si existe alguna ruta que permita partir y volver a la
+-- misma ciudad de origen (obvio todo tiene q cumplir que los vuelos sean validos)
+-- como tengo que analizar los casos en los que haya escala (3 viajes al menos) y no haya escala voy a tener que comparar en principio
+-- tres viajes
+
+-- REQUIERE Y ASEGURA
+-- en el caso de que la lista este vacia no importa que ciudad me tire porque va a ser falso que se puede volver
+-- se tiene que cumplir vuelosvalidos
+-- mi ciudad debe aparecer al mismo tiempo en:
+                           -- en el caso de que comparemos solo dos = en x (ciudadorigen1) y en una parte de ys(ciudaddestino2)
+                           -- en el caso de que comparemos los tres = en una parte de xs (ciudaddestino1) y en y (ciudadorigen2),
+                           -- en una parte  ys (ciudaddestino2) y en w (ciudadorigen3), en una parte de ws (ciudaddestino3) y x (ciudorig1)
+                            -- todo esto va en la misma linea -- (3era)
+------------------------------------------------------------------------------------------------------------------------
+puedoVolverAOrigen :: AgenciaDeViajes -> Ciudad -> Bool  
+puedoVolverAOrigen agencia ciudad | cualEsLaCiudad (agencia) == ciudad = existeRuta (agencia) 
+                                  | otherwise = False
+
+existeRuta :: AgenciaDeViajes -> Bool
+existeRuta ((o1,d1,_):(o2,d2,_):(o3,d3,_):vuelos) | (o1 == d2 && d1 == o2) || (d1 == o2 && d2 == o3 && d3 == o1) = vuelosValidos (existeRuta)
+                                                  | otherwise = False
+
+----------------------------------------------------------------------------------------
+-- EXPLICACIONES --
+
+-- quiero crear una funcion que me diga CUAL es la ciudad que me cumple lo mismo que existe ruta para poder despues comparar esa ciudad
+-- con la que le voy a tirar a puedoVolverAOrigen
+
+cualEsLaCiudad :: AgenciaDeViajes -> Ciudad -> Ciudad 
+cualEsLaCiudad ((c1:c1s):(c2:c2s):(c3:c3s)) ciudad | (c1 == head c2s && head c1s == c2) || (head c1s == c2 && head c2s == c3 && head c3s == c1) = cualEsLaCiudad ciudad
+                                                   | otherwise = error
+                ---no se si se puede usar el error pero es la unica salida que vi para resolver el ejercicio, deberiamos preg en clase--
+                                                
+-- (podria haber puesto (o1 == d2 && d1 == o2) || (d1 == o2 && d2 == o3 && d3 == o1) en vez de usar head pero no se por que me salio asi)
+-- cualEsLaCiudad tiene como entrada la lista de vuelos y la ciudad y si entre los vuelos distintos encuentra a aquellos cuyas ciudades de 
+-- origen y destino sean iguales, entonces se va a aplicar a si misma sobre la ciudad que le meti para devolverme el nombre de la ciudad
+-- que me cumple mis parametros
+
+-- 1) en puedoVolverAOrigen llamo a cualEsLaCiudad sobre agencia para que me diga  un nombre de una ciudad que yo pueda comparar
+-- con la ciudad que van a meter en la entrada junto con los vuelos
+-- 2) en puedoVolverAOrigen puedo llamar a existeRuta sobre agencia al final para que de alguna manera me 'filtre' los vuelos que me
+-- cumplen que pueda volver al origen
+                                
+--Bien:
+--existeRuta :: AgenciaDeViajes -> Bool
+--existeRuta ((o1,d1,_):(o2,d2,_):(o3,d3,_):vuelos) | (o1 == d2 && d1 == o2) || (d1 == o2 && d2 == o3 && d3 == o1) = vuelosValidos (existeRuta)
+   --                                               | otherwise = False
+                                                                          
+-- si pongo (o1 == d2 && d1 == o2)
+                -- [("Cordoba", "Rosario", 5.0), ("Rosario", "Cordoba", 5.0), ("Cordoba", "BsAs", 8.0)] Cordoba = funca perfecto
+                -- [("Cordoba", "Rosario", 5.0), ("Rosario, "BsAs",  5.0), ("BsAs", "Cordoba", 5.0)] Cordoba = funca perfecto
+-- me acuerdo de llamar a vuelosValidos:
+-- la llamo sobre existeRuta ya que existe ruta tiene como entrada agencia y agencia son los vuelos (o1,d1) (o2,d2) (o3,d3) etc
+-- y vuelosValidos me va a devolver un true si esta todo ok
+
+--Mal (antes):
+--existeRuta :: AgenciaDeViajes -> Bool
+--existeRuta ((o1,d1,_):(o2,d2,_):(o3,d3,_):vuelos) | (o1 == d2) || (d1 == o2 && d2 == o3 && d3 == o1) = True
+   --                                               | otherwise = False
+
+-- si pusiera solo o1 == d2 
+        -- aun puede pasar que [("Rosario", "Rosario", 5.0), ("Rosario, "Rosario",  5.0)]  = True 
+        -- (que en realidad no deberia funcionar)  porque no llame a vuelos validos!!
+-----------------------------------------------------------------------------------------------------------------
