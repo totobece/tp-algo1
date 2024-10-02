@@ -1,8 +1,10 @@
-EL EJERCICIO ARRANCA EN LA LINEA 47 Y LAS EXPLICACIONES DE LAS FUNCIONES EN LA 56
+EL EJERCICIO ARRANCA EN LA LINEA 50 Y LAS EXPLICACIONES DE LAS FUNCIONES EN LA 60
 Lo subi asi porque si copian y pegan en vsc van a ver que tira algunos errores en la funcion cualEsLaCiudad pero no se bien que es o como resolver de otra manera pero yo
 creo que va por acá, creo que la aplicacion de vuelosValidos que era el problema del que hablamos ya esta resuelto pero habria que fijarse como hacer para que agencia
 y ciudad de puedoVolverAOrigen queden bien relacionados o llevarlos a alguna forma en la que sean comparables porque los errores se derivan de ahi y de la funcion que intenta
 resolver ese problema
+-- estaba mirando el ej 5 q hizo luciano para ver si me podia robar de ahi algo para resolver el problema xq creo que es la unica manera de resolver est
+y creo que le falto subir la funcion que se llama "vuelosCompletos", y compararVuelosEscala estaria bueno charlarla
 
 -- ejercicio 7 (PuedoVolverAOrigen)
 --requiere {vuelosValidos(agencia)}
