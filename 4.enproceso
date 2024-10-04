@@ -42,16 +42,22 @@ vuelosValidos (v:vs) = vueloValido v && sinVuelosDuplicados (v:vs) && vuelosVali
 
 listaSoloCiudades :: AgenciaDeViajes -> [Ciudad]
 listaSoloCiudades [] = []
-listaSoloCiudades ((partida, llegada,_): vuelos) = partida:llegada ++ listaSoloCiudades vuelos
+listaSoloCiudades ((partida, llegada,_): vuelos) = partida: llegada : listaSoloCiudades vuelos
 
 --funcion que toma de la lista que tiene solo ciudades la que esta mas repetida, tiene que llamar a cuentoapariciones para saber
 -- cual es la ciudad mas repe
 
 ciudadMasRepe  :: (Eq t) => [t] -> t
 ciudadMasRepe [ciudad] = ciudad
-ciudadMasRepe listaciudades = cualTieneMasApariciones ciudad1 || cualTieneMasApariciones ciudad2
-                                                              ^^
-                                               -- a esto lo estoy cambiando --
+ciudadMasRepe listasolociudades = comparoListaSoloCiudades listasolociudades listasolociudades
+
+-- es la funcion que me toma las dos listas creadas a partir de las dos posibilidades tipo 
+-- (Rosario, Rosario, Rosario) (Cordoba, Cordoba, Cordoba, Cordoba) y segun lo q me diga cuentoapariciones me devuelve una ciudad
+-- tengo que terminar de pensar bien esta y estariamos
+
+comparoListaSoloCiudades :: (Eq t) => [t] -> [t] -> t 
+comparoListaSoloCiudades listaSoloCiudades 
+
 
 -- lista que me cuenta las apariciones de cada ciudad en mi lista de solo ciudades 
 
@@ -65,5 +71,5 @@ cuentoApariciones origen (partida:vuelos) | origen == partida = 1 + cuentoAparic
 cualTieneMasApariciones :: [Ciudad] -> [Ciudad] -> Ciudad
 cualTieneMasApariciones (ciudad1:ciudad2:ciudades) listaSoloCiudades | cuentoApariciones ciudad1 listaSoloCiudades >= cuentoApariciones ciudad2 listaSoloCiudades = ciudad1
                                                                      | otherwise = ciudad2
--- esta sin terminar aun
+                                        
                                         
