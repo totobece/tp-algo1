@@ -50,6 +50,8 @@ listaSoloCiudades ((partida, llegada,_): vuelos) = partida:llegada ++ listaSoloC
 ciudadMasRepe  :: (Eq t) => [t] -> t
 ciudadMasRepe [ciudad] = ciudad
 ciudadMasRepe listaciudades = cualTieneMasApariciones ciudad1 || cualTieneMasApariciones ciudad2
+                                                              ^^
+                                               -- a esto lo estoy cambiando --
 
 -- lista que me cuenta las apariciones de cada ciudad en mi lista de solo ciudades 
 
