@@ -1,0 +1,67 @@
+no se si hicieron el 4 pero vi que no estaba subido aca y me mande a hacerlo
+lo subo pq a veces se me apaga la compu de la nada y asi puedo seguir pensandolo desde donde estaba en el celu 
+
+import GHC.Read (list)
+type Ciudad = String
+
+type Duracion = Float
+
+type Vuelo = (Ciudad, Ciudad, Duracion)
+
+type AgenciaDeViajes = [Vuelo]
+
+vueloValido :: Vuelo -> Bool
+vueloValido (ciudadOrigen, ciudadDestino, duracionViaje) = duracionViaje > 0 && ciudadOrigen /= ciudadDestino
+
+verificarMismoVuelo :: Vuelo -> Vuelo -> Bool
+verificarMismoVuelo (ciudadOrigen1, ciudadDestino1, _) (ciudadOrigen2, ciudadDestino2, _) = ciudadOrigen1 == ciudadOrigen2 && ciudadDestino1 == ciudadDestino2
+
+
+sinVuelosDuplicados :: [Vuelo] -> Bool
+sinVuelosDuplicados [] = True
+sinVuelosDuplicados (v:vs) = not (vueloDuplicado v vs) && sinVuelosDuplicados vs
+                        where 
+                            vueloDuplicado :: Vuelo -> [Vuelo] -> Bool
+                            vueloDuplicado _ [] = False
+                            vueloDuplicado v1 (v2:vs) | verificarMismoVuelo v1 v2 = True
+                                                      | otherwise = vueloDuplicado v1 vs
+                            
+
+vuelosValidos :: AgenciaDeViajes -> Bool
+vuelosValidos [] = True
+vuelosValidos (v:vs) = vueloValido v && sinVuelosDuplicados (v:vs) && vuelosValidos vs 
+-------------------------------------------------------------------------------------------
+-- ejer4
+--problema ciudadMasConectada (agencia: AgenciaDeViajes) : Ciudad {
+--requiere: {vuelosValidos(agencia)}
+--requiere: {|agencia| > 0}
+--asegura: {res es alguna de las ciudades con m´as conexiones teniendo en cuenta los vuelos ofrecidos por agencia}
+--}
+
+-- funcion que a partir de la lista de viajes q me ofrece AgenciaDeViajes toma solo las ciudades y las pone como elementos de una nueva lista
+
+listaSoloCiudades :: AgenciaDeViajes -> [Ciudad]
+listaSoloCiudades [] = []
+listaSoloCiudades ((partida, llegada,_): vuelos) = partida:llegada ++ listaSoloCiudades vuelos
+
+--funcion que toma de la lista que tiene solo ciudades la que esta mas repetida, tiene que llamar a cuentoapariciones para saber
+-- cual es la ciudad mas repe
+
+ciudadMasRepe  :: (Eq t) => [t] -> t
+ciudadMasRepe [ciudad] = ciudad
+ciudadMasRepe listaciudades = cualTieneMasApariciones ciudad1 || cualTieneMasApariciones ciudad2
+
+-- lista que me cuenta las apariciones de cada ciudad en mi lista de solo ciudades 
+
+cuentoApariciones :: (Eq t) => t -> [t] -> Int
+cuentoApariciones _ [] = 0
+cuentoApariciones origen (partida:vuelos) | origen == partida = 1 + cuentoApariciones origen vuelos
+                                          | otherwise = cuentoApariciones origen vuelos
+
+-- quiero saber CUAL es el que aparece mas veces
+
+cualTieneMasApariciones :: [Ciudad] -> [Ciudad] -> Ciudad
+cualTieneMasApariciones (ciudad1:ciudad2:ciudades) listaSoloCiudades | cuentoApariciones ciudad1 listaSoloCiudades >= cuentoApariciones ciudad2 listaSoloCiudades = ciudad1
+                                                                     | otherwise = ciudad2
+-- esta sin terminar aun
+                                        
