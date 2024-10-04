@@ -1,0 +1,24 @@
+yo creo que del 1 se pueden agregar mas
+vuelos no validos porque son el  mismo pero al reves y tienen misma duracion ???
+caso uno valido y uno no
+invertidas true
+
+-- testing 3
+testsEjmodernizarFlota = test [
+    "flota modernizada sin elementos" ~: modernizarFlota [] ~?= [] ,
+    "flota modernizada con un elemento" ~: modernizarFlota [("BsAs", "Rosario", 10.0)] ~?= [("BsAs", "Rosario", 9.0)]
+    "flota modernizada con dos elementos" ~: modernizarFlota [("BsAs", "Rosario", 4.0), ("Necochea", "Mar del Plata", 2.0)] ~?= [("BsAs", "Rosario", 3.6), ("Necochea", "Mar del Plata", 1.8)]
+    "flota modernizada con tres elementos" modernizarFlota [("BsAs", "Rosario", 12.0), ("Necochea", "Mar del Plata", 3.0), ("Cataratas", "Rio Grande", 5.19)] ~?= [("BsAs", "Rosario", 10.8), ("Necochea", "Mar del Plata", 2.7), ("Cataratas", "Rio Grande", 4.671)]
+]
+
+--testing 1
+testsEjvuelosValidos = test [
+    "vuelo no valido duracion 0" ~: vuelosValidos [("Cataratas", "Rio Grande", 0)] ~?= False
+    "vuelos valido sin elementos" ~: vuelosValidos [] ~?= [] ,
+    "vuelos valido con un elemento" ~: vuelosValidos [("BsAs", "Rosario", 5.0)] ~?= True
+    "vuelos no valido con un elemento" ~: vuelosValidos [("BsAs", "BsAs", 1.0)] ~?= False
+    "vuelos valido con dos elementos" ~: vuelosValidos [("Neco", "Mardel", 3.0), ("Rosario", "BsAs", 4.0)] ~?= True
+    "vuelos no valido con dos elementos" ~: vuelosValidos [("Neco", "Mardel", 3.0), ("Neco", "Mardel", 3.0)] ~?= False
+    "vuelos no valido porque tienen distinta duracion" ~: vuelosValidos [("Neco", "Mardel", 3.0), ("Neco", "Mardel", 4.0)] ~?= False
+    
+    ]
