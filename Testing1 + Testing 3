@@ -1,7 +1,3 @@
-yo creo que del 1 se pueden agregar mas
-vuelos no validos porque son el  mismo pero al reves y tienen misma duracion ???
-invertidas true
-
 
 --testing 1
 testsEjvuelosValidos = test [
@@ -32,8 +28,22 @@ testsEjsePuedeLlegar = test [
     "Se puede llegar caso verdadero con una escala" ~: sePuedeLlegar [("BsAs", "Rosario", 5.0), ("Rosario", "Córdoba", 5.0), ("Córdoba", "BsAs", 8.0)] "BsAs" "Córdoba" ~?= True
     "Se puede llegar directo si hay multiples vuelos" ~: [("Necochea", "Bahia Blanca", 5.0), ("Rosario", "BsAs", 4.0), ("Bahia Blanca", "BsAs", 6.0)] "Necochea" "BsAs" ~?= True
     "Se puede llegar directo y con escala" ~: [("Necochea", "Mar del Plata", 2.0), ("Mar del Plata", "Miramar", 5.0), ("Miramar", "Rio Grande", 4.0), ("Mar del Plata", "Rio Grande", 10.0)] "Necochea" "Rio Grande" ~?= True
-    "Se puede llegar directo y con escala iterando" ~: sePuedeLlegar [[("Tucuman", "Corrientes", 4.0), ("Tucuman", "Entre Rios", 3.0), ("Entre Rios", "BsAs", 5.0)] "Tucuman" "BsAs" ~?= True 
+    "Se puede llegar con escala iterando" ~: sePuedeLlegar [[("Tucuman", "Corrientes", 4.0), ("Tucuman", "Entre Rios", 3.0), ("Entre Rios", "BsAs", 5.0)] "Tucuman" "BsAs" ~?= True 
     "Se puede llegar pero necesito dos escalas" ~: sePuedeLlegar [("Miramar", "Pinamar", 1.0), ("Pinamar", "Mendoza"), ("Mendoza", "Cataratas", 6.0) ("Cataratas", "Cordoba", 5.0)] "Miramar" "Córdoba" ~?= False  
     "Se puede llegar a caso verdadero directo o con escala" ~: sePuedeLlegar [("Tucuman", "Corrientes", 4.0), ("Mar del Plata", "Entre Rios", 3.0), ("Entre Rios", "BsAs", 5.0)] "Tucuman" "BsAs" ~?= False 
     ]
 
+-- testing 7
+
+testsEjpuedoVolverAOrigen = test [
+        "puedo volver a origen con un vuelo" ~: puedoVolverAOrigen [("BsAs", "Mar del Plata", 4.0)] "BsAs" ~?= False ,
+        "puedo volver a origen caso verdadero directo" ~: puedoVolverAOrigen [("BsAs", "Necochea", 2.0), ("Necochea", "BsAs", 2.0)] "BsAs" ~?= True ,
+        "puedo volver a origen caso verdadero directo por mas de que haya otros viajes de por medio" ~: -- la iteracion me lo permite
+          puedoVolverAOrigen [("Necochea", "Tandil", 5.0), ("BsAs", "Necochea", 2.0), ("Tandil", "Azul", 2.0), ("Necochea", "BsAs", 2.0)] "BsAs" ~?= True
+        "puedo volver a origen caso verdadero con una escala" ~: puedoVolverAOrigen [("BsAs", "Rosario", 5.0), ("Rosario", "Córdoba", 5.0), ("Cordoba", "Mendoza", 3.0), ("Mendoza", "Rosario", 8.0)] "Rosario" ~?= True ,
+        "puedo volver a origen caso verdadero directo y con una escala" ~: puedoVolverAOrigen [("BsAs", "Montevideo", 4.0), ("Montevideo", "Asuncion", 3.0), ("Asuncion", "BsAs", 2.5), ("Montevideo", "BsAs", 4.0)] "BsAs" ~?= True ,
+        "puedo volver a origen caso verdadero en general" ~: -- la iteracion me lo permite
+          puedoVolverAOrigen [("Necochea", "Mar del Plata", 3.0), ("BsAs", "La Rioja", 5.0), ("La Rioja", "Neuquen", 4.0), ("Neuquen", "Azul", 6.0), ("La Rioja", "BsAs", 5.0)] "BsAs" ~?= True ,
+        "puedo volver a origen caso falso en general" ~: -- puedo conectar varios viajes entre si y volver a otras ciudades pero ninguno me va a devolver a la ciudad de la que sali (BsAs)
+          puedoVolverAOrigen [("Madrid", "Roma", 5.0), ("Roma", "Madrid", 5.0), ("BsAs", "Mar del Plata", 4.0), ("Necochea", "Roma", 12.0), ("Mar del Plata", "Necochea", 2.0)] "BsAs" ~?= False ,
+    ]   
