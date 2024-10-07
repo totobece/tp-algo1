@@ -1,75 +1,31 @@
-no se si hicieron el 4 pero vi que no estaba subido aca y me mande a hacerlo
-lo subo pq a veces se me apaga la compu de la nada y asi puedo seguir pensandolo desde donde estaba en el celu 
+--Ejercicio 4
 
-import GHC.Read (list)
-type Ciudad = String
+-- funcion que me pone en una lista todas las ciudades ofrecidas por la agencia (con repeticiones)
+listaCiudades :: AgenciaDeViajes -> [Ciudad]
+listaCiudades [] = []
+listaCiudades ((ciudad1,ciudad2,_):vuelos) = ciudad1 : ciudad2 :listaCiudades vuelos
 
-type Duracion = Float
+--funcion que compara la cantidad de apariciones de las ciudades en las listas segun el numero que me devuelve contarapariciones
+-- me dice cual es la mas repe
+compararApariciones :: Ciudad -> Ciudad -> Ciudad
+compararApariciones ciudad1 ciudad2 | contarApariciones ciudad1 >= contarApariciones ciudad2 = ciudad1
+                                    | otherwise = ciudad2
 
-type Vuelo = (Ciudad, Ciudad, Duracion)
+-- funcion que cuenta las apariciones de las ciudades en la lista
+-- me dice cuantas veces aparece la mas repe
+contarApariciones :: (Eq t) => t -> [t] -> Int
+contarApariciones _ [] = 0
+contarApariciones ciudad (ciudad1:vuelos) | ciudad == ciudad1 = 1 + contarApariciones ciudad vuelos
+                                          | otherwise = contarApariciones ciudad vuelos
 
-type AgenciaDeViajes = [Vuelo]
+-- funcion que me dice cual es la que esta mas repetida segun lo que contó contarapariciones
+masRepe :: (Eq t) => [t] -> t
+masRepe [t] = t
+masRepe listadeciudades = 
 
-vueloValido :: Vuelo -> Bool
-vueloValido (ciudadOrigen, ciudadDestino, duracionViaje) = duracionViaje > 0 && ciudadOrigen /= ciudadDestino
+------------ no se como conectar  la cant de apariciones con el nombre de la que mas aparece :p solo falta eso y estaria
 
-verificarMismoVuelo :: Vuelo -> Vuelo -> Bool
-verificarMismoVuelo (ciudadOrigen1, ciudadDestino1, _) (ciudadOrigen2, ciudadDestino2, _) = ciudadOrigen1 == ciudadOrigen2 && ciudadDestino1 == ciudadDestino2
-
-
-sinVuelosDuplicados :: [Vuelo] -> Bool
-sinVuelosDuplicados [] = True
-sinVuelosDuplicados (v:vs) = not (vueloDuplicado v vs) && sinVuelosDuplicados vs
-                        where 
-                            vueloDuplicado :: Vuelo -> [Vuelo] -> Bool
-                            vueloDuplicado _ [] = False
-                            vueloDuplicado v1 (v2:vs) | verificarMismoVuelo v1 v2 = True
-                                                      | otherwise = vueloDuplicado v1 vs
-                            
-
-vuelosValidos :: AgenciaDeViajes -> Bool
-vuelosValidos [] = True
-vuelosValidos (v:vs) = vueloValido v && sinVuelosDuplicados (v:vs) && vuelosValidos vs 
--------------------------------------------------------------------------------------------
--- ejer4
---problema ciudadMasConectada (agencia: AgenciaDeViajes) : Ciudad {
---requiere: {vuelosValidos(agencia)}
---requiere: {|agencia| > 0}
---asegura: {res es alguna de las ciudades con m´as conexiones teniendo en cuenta los vuelos ofrecidos por agencia}
---}
-
--- funcion que a partir de la lista de viajes q me ofrece AgenciaDeViajes toma solo las ciudades y las pone como elementos de una nueva lista
-
-listaSoloCiudades :: AgenciaDeViajes -> [Ciudad]
-listaSoloCiudades [] = []
-listaSoloCiudades ((partida, llegada,_): vuelos) = partida: llegada : listaSoloCiudades vuelos
-
---funcion que toma de la lista que tiene solo ciudades la que esta mas repetida, tiene que llamar a cuentoapariciones para saber
--- cual es la ciudad mas repe
-
-ciudadMasRepe  :: (Eq t) => [t] -> t
-ciudadMasRepe [ciudad] = ciudad
-ciudadMasRepe listasolociudades = comparoListaSoloCiudades listasolociudades listasolociudades
-
--- es la funcion que me toma las dos listas creadas a partir de las dos posibilidades tipo 
--- (Rosario, Rosario, Rosario) (Cordoba, Cordoba, Cordoba, Cordoba) y segun lo q me diga cuentoapariciones me devuelve una ciudad
--- tengo que terminar de pensar bien esta y estariamos
-
-comparoListaSoloCiudades :: (Eq t) => [t] -> [t] -> t 
-comparoListaSoloCiudades listaSoloCiudades 
-
-
--- lista que me cuenta las apariciones de cada ciudad en mi lista de solo ciudades 
-
-cuentoApariciones :: (Eq t) => t -> [t] -> Int
-cuentoApariciones _ [] = 0
-cuentoApariciones origen (partida:vuelos) | origen == partida = 1 + cuentoApariciones origen vuelos
-                                          | otherwise = cuentoApariciones origen vuelos
-
--- quiero saber CUAL es el que aparece mas veces
-
-cualTieneMasApariciones :: [Ciudad] -> [Ciudad] -> Ciudad
-cualTieneMasApariciones (ciudad1:ciudad2:ciudades) listaSoloCiudades | cuentoApariciones ciudad1 listaSoloCiudades >= cuentoApariciones ciudad2 listaSoloCiudades = ciudad1
-                                                                     | otherwise = ciudad2
+ciudadMasConectada  :: AgenciaDeViajes -> Ciudad
+ciudadMasConectada agencia = masRepe listaCiudades agencia
                                         
                                         
