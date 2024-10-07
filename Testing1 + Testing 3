@@ -20,7 +20,7 @@ testsEjvuelosValidos = test [
     "vuelos valido con dos elementos" ~: vuelosValidos [("Neco", "Mardel", 3.0), ("Rosario", "BsAs", 4.0)] ~?= True
     "vuelos no valido con dos elementos" ~: vuelosValidos [("Neco", "Mardel", 3.0), ("Neco", "Mardel", 3.0)] ~?= False
     "vuelos no valido porque tienen distinta duracion" ~: vuelosValidos [("Neco", "Mardel", 3.0), ("Neco", "Mardel", 4.0)] ~?= False
-    ]
+    "un vuelo valido y uno no" ~: vuelosValidos []
 
 -- testing 5
 -- solo es true directo o con A LO SUMO una escala
