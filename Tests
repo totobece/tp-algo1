@@ -26,7 +26,7 @@ testsEjciudadMasConectada = test [
     "caso ciudad mas conectada en el que dos ciudades tienen la misma cantidad de conexiones" ~: 
     [("Santiago", "BsAs", 1.0), ("Santiago", "Asuncion", 1.0) ("BsAs", "Montevideo", 1.0), ("Neco, BsAs", 1.0), ("Montevideo", "Santiago", 1.0)] ~?= Santiago ,
     "caso ciudad mas conectada en el que todas las que aparecen tienen la misma cantidad de conexiones" ~:
-    [("Mardel", "Neco", 2.0), ("BsAs", "La Plata", 2.0), ("Madrid", "Roma", 4.0), ()] ~?= Roma
+    [("Mardel", "Neco", 2.0), ("BsAs", "La Plata", 2.0), ("Madrid", "Roma", 4.0)] ~?= Roma
     ]
 
 -- testing 5
@@ -41,6 +41,15 @@ testsEjsePuedeLlegar = test [
     "Se puede llegar con escala iterando" ~: sePuedeLlegar [[("Tucuman", "Corrientes", 4.0), ("Tucuman", "Entre Rios", 3.0), ("Entre Rios", "BsAs", 5.0)] "Tucuman" "BsAs" ~?= True ,
     "Se puede llegar caso falso porque necesito mas de una escala" ~: sePuedeLlegar [("Miramar", "Pinamar", 1.0), ("Pinamar", "Mendoza"), ("Mendoza", "Cataratas", 6.0) ("Cataratas", "Cordoba", 5.0)] "Miramar" "Córdoba" ~?= False ,
     "Se puede llegar a caso verdadero directo o con escala" ~: sePuedeLlegar [("Tucuman", "Corrientes", 4.0), ("Mar del Plata", "Entre Rios", 3.0), ("Entre Rios", "BsAs", 5.0)] "Tucuman" "BsAs" ~?= False 
+    ]
+
+--testing 6 
+
+testsEjduracionDelCaminoMasRapido = test [
+    "duracion del camino mas rapido con un solo vuelo directo" ~: duracionDelCaminoMasRapido [("Necochea", "Mar del Plata", 2.0)] "Necochea" "Mar del Plata" ~?= 2.0 ,
+    "duración del camino más rápido con una escala" ~: duracionDelCaminoMasRapido [("BsAs", "Rosario", 5.0), ("Rosario", "Córdoba", 5.0), ("Córdoba", "BsAs", 8.0)] "BsAs" "Córdoba" ~?= 10.0 ,
+    "duracion del camino mas rapido con un vuelo directo y uno con escala(directo es mas rapido)" ~: duracionDelCaminoMasRapido [("Neuquen", "Sta Rosa", 4.0), ("Sta Rosa", "Trelew", 3.0), ("Neuquen", "Trelew", 2.0)] "Neuquen" "Trelew" ~?= 2.0 ,
+    "duracion del camino mas rapido con un vuelo directo y uno con escala(escala es mas rapido)" ~: duracionDelCaminoMasRapido [("Neuquen", "Sta Rosa", 1.0), ("Sta Rosa", "Trelew", 2.0), ("Neuquen", "Trelew", 5.0)] "Neuquen" "Trelew" ~?= 3.0
     ]
 
 -- testing 7
