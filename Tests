@@ -8,13 +8,13 @@ testsEjvuelosValidos = test [
     "vuelos valido con dos elementos" ~: vuelosValidos [("Neco", "Mardel", 3.0), ("Rosario", "BsAs", 4.0)] ~?= True ,
     "vuelos no valido con dos elementos" ~: vuelosValidos [("Neco", "Mardel", 3.0), ("Neco", "Mardel", 3.0)] ~?= False ,
     "vuelos no valido por error de duracion" ~: vuelosValidos [("Rosario", "Mendoza", 5.0), ("Mendoza", "Rosario", 6.0)] ~?= False ,
-    "un vuelo valido y uno no" ~: vuelosValidos [("Entre Rios", "Corrientes", 4.5), ("Tucuman", "Tucuman", 0.0)] ~?= False ,
+    "un vuelo valido y uno no" ~: vuelosValidos [("Entre Rios", "Corrientes", 4.5), ("Tucuman", "Tucuman", 0.0)] ~?= False 
 ]
 -- testing 3
 testsEjmodernizarFlota = test [
     "flota modernizada sin elementos" ~: modernizarFlota [] ~?= [] ,
-    "flota modernizada con un elemento" ~: modernizarFlota [("BsAs", "Rosario", 10.0)] ~?= [("BsAs", "Rosario", 9.0)]
-    "flota modernizada con dos elementos" ~: modernizarFlota [("BsAs", "Rosario", 4.0), ("Necochea", "Mar del Plata", 2.0)] ~?= [("BsAs", "Rosario", 3.6), ("Necochea", "Mar del Plata", 1.8)]
+    "flota modernizada con un elemento" ~: modernizarFlota [("BsAs", "Rosario", 10.0)] ~?= [("BsAs", "Rosario", 9.0)] ,
+    "flota modernizada con dos elementos" ~: modernizarFlota [("BsAs", "Rosario", 4.0), ("Necochea", "Mar del Plata", 2.0)] ~?= [("BsAs", "Rosario", 3.6), ("Necochea", "Mar del Plata", 1.8)] ,
     "flota modernizada con tres elementos" modernizarFlota [("BsAs", "Rosario", 12.0), ("Necochea", "Mar del Plata", 3.0), ("Cataratas", "Rio Grande", 5.19)] ~?= [("BsAs", "Rosario", 10.8), ("Necochea", "Mar del Plata", 2.7), ("Cataratas", "Rio Grande", 4.671)]
 ]
  --testing 4 
@@ -33,14 +33,14 @@ testsEjciudadMasConectada = test [
 -- solo es true directo o con A LO SUMO una escala
 
 testsEjsePuedeLlegar = test [
-    "Se puede llegar sin vuelos" ~: sePuedeLlegar [] ~?= False
-    "Se puede llegar en el mismo viaje" ~: sePuedeLlegar [("BsAs", "Mendoza", 5.0)] "BsAs" "Mendoza" ~?= True
-    "Se puede llegar directo" ~: sePuedeLlegar [("Necochea", "Mar del Plata", 2.0), ("Mar del Plata","BsAs", 2.0)] "Necochea" "BsAs" ~?= True 
-    "Se puede llegar caso verdadero con una escala" ~: sePuedeLlegar [("BsAs", "Rosario", 5.0), ("Rosario", "Córdoba", 5.0), ("Córdoba", "BsAs", 8.0)] "BsAs" "Córdoba" ~?= True
-    "Se puede llegar directo si hay multiples vuelos" ~: [("Necochea", "Bahia Blanca", 5.0), ("Rosario", "BsAs", 4.0), ("Bahia Blanca", "BsAs", 6.0)] "Necochea" "BsAs" ~?= True
-    "Se puede llegar directo y con escala" ~: [("Necochea", "Mar del Plata", 2.0), ("Mar del Plata", "Miramar", 5.0), ("Miramar", "Rio Grande", 4.0), ("Mar del Plata", "Rio Grande", 10.0)] "Necochea" "Rio Grande" ~?= True
-    "Se puede llegar con escala iterando" ~: sePuedeLlegar [[("Tucuman", "Corrientes", 4.0), ("Tucuman", "Entre Rios", 3.0), ("Entre Rios", "BsAs", 5.0)] "Tucuman" "BsAs" ~?= True 
-    "Se puede llegar pero necesito dos escalas" ~: sePuedeLlegar [("Miramar", "Pinamar", 1.0), ("Pinamar", "Mendoza"), ("Mendoza", "Cataratas", 6.0) ("Cataratas", "Cordoba", 5.0)] "Miramar" "Córdoba" ~?= False  
+    "Se puede llegar sin vuelos" ~: sePuedeLlegar [] ~?= False ,
+    "Se puede llegar en el mismo viaje" ~: sePuedeLlegar [("BsAs", "Mendoza", 5.0)] "BsAs" "Mendoza" ~?= True ,
+    "Se puede llegar directo" ~: sePuedeLlegar [("Necochea", "Mar del Plata", 2.0), ("Mar del Plata","BsAs", 2.0)] "Necochea" "BsAs" ~?= True ,
+    "Se puede llegar caso verdadero con una escala" ~: sePuedeLlegar [("BsAs", "Rosario", 5.0), ("Rosario", "Córdoba", 5.0), ("Córdoba", "BsAs", 8.0)] "BsAs" "Córdoba" ~?= True ,
+    "Se puede llegar directo si hay multiples vuelos" ~: [("Necochea", "Bahia Blanca", 5.0), ("Rosario", "BsAs", 4.0), ("Bahia Blanca", "BsAs", 6.0)] "Necochea" "BsAs" ~?= True ,
+    "Se puede llegar directo y con escala" ~: [("Necochea", "Mar del Plata", 2.0), ("Mar del Plata", "Miramar", 5.0), ("Miramar", "Rio Grande", 4.0), ("Mar del Plata", "Rio Grande", 10.0)] "Necochea" "Rio Grande" ~?= True ,
+    "Se puede llegar con escala iterando" ~: sePuedeLlegar [[("Tucuman", "Corrientes", 4.0), ("Tucuman", "Entre Rios", 3.0), ("Entre Rios", "BsAs", 5.0)] "Tucuman" "BsAs" ~?= True ,
+    "Se puede llegar pero necesito dos escalas" ~: sePuedeLlegar [("Miramar", "Pinamar", 1.0), ("Pinamar", "Mendoza"), ("Mendoza", "Cataratas", 6.0) ("Cataratas", "Cordoba", 5.0)] "Miramar" "Córdoba" ~?= False ,
     "Se puede llegar a caso verdadero directo o con escala" ~: sePuedeLlegar [("Tucuman", "Corrientes", 4.0), ("Mar del Plata", "Entre Rios", 3.0), ("Entre Rios", "BsAs", 5.0)] "Tucuman" "BsAs" ~?= False 
     ]
 
@@ -50,7 +50,7 @@ testsEjpuedoVolverAOrigen = test [
         "puedo volver a origen con un vuelo" ~: puedoVolverAOrigen [("BsAs", "Mar del Plata", 4.0)] "BsAs" ~?= False ,
         "puedo volver a origen caso verdadero directo" ~: puedoVolverAOrigen [("BsAs", "Necochea", 2.0), ("Necochea", "BsAs", 2.0)] "BsAs" ~?= True ,
         "puedo volver a origen caso verdadero directo por mas de que haya otros viajes de por medio" ~: -- la iteracion me lo permite
-          puedoVolverAOrigen [("Necochea", "Tandil", 5.0), ("BsAs", "Necochea", 2.0), ("Tandil", "Azul", 2.0), ("Necochea", "BsAs", 2.0)] "BsAs" ~?= True
+          puedoVolverAOrigen [("Necochea", "Tandil", 5.0), ("BsAs", "Necochea", 2.0), ("Tandil", "Azul", 2.0), ("Necochea", "BsAs", 2.0)] "BsAs" ~?= True ,
         "puedo volver a origen caso verdadero con una escala" ~: puedoVolverAOrigen [("BsAs", "Rosario", 5.0), ("Rosario", "Córdoba", 5.0), ("Cordoba", "Mendoza", 3.0), ("Mendoza", "Rosario", 8.0)] "Rosario" ~?= True ,
         "puedo volver a origen caso verdadero directo y con una escala" ~: puedoVolverAOrigen [("BsAs", "Montevideo", 4.0), ("Montevideo", "Asuncion", 3.0), ("Asuncion", "BsAs", 2.5), ("Montevideo", "BsAs", 4.0)] "BsAs" ~?= True ,
         "puedo volver a origen caso verdadero en general" ~: -- la iteracion me lo permite
