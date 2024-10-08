@@ -17,6 +17,17 @@ testsEjmodernizarFlota = test [
     "flota modernizada con dos elementos" ~: modernizarFlota [("BsAs", "Rosario", 4.0), ("Necochea", "Mar del Plata", 2.0)] ~?= [("BsAs", "Rosario", 3.6), ("Necochea", "Mar del Plata", 1.8)]
     "flota modernizada con tres elementos" modernizarFlota [("BsAs", "Rosario", 12.0), ("Necochea", "Mar del Plata", 3.0), ("Cataratas", "Rio Grande", 5.19)] ~?= [("BsAs", "Rosario", 10.8), ("Necochea", "Mar del Plata", 2.7), ("Cataratas", "Rio Grande", 4.671)]
 ]
+ --testing 4 
+
+testsEjciudadMasConectada = test [
+    "ciudad mas conectada que aparece dos veces" ~: ciudadMasConectada [("BsAs", "Rosario", 10.0), ("Rosario", "Córdoba", 7.0)] ~?= Rosario ,
+    "ciudad mas conectada que aparece tres veces" ~: 
+    ciudadMasConectada [("Necochea", "Rosario", 12.0), ("Mar del Plata", "Necochea", 3.0), ("Mar del Plata", "Miramar", 2.0), ("Tandil", "Necochea", 3.0)] ~?= Necochea ,
+    "caso ciudad mas conectada en el que dos ciudades tienen la misma cantidad de conexiones" ~: 
+    [("Santiago", "BsAs", 1.0), ("Santiago", "Asuncion", 1.0) ("BsAs", "Montevideo", 1.0), ("Neco, BsAs", 1.0), ("Montevideo", "Santiago", 1.0)] ~?= Santiago ,
+    "caso ciudad mas conectada en el que todas las que aparecen tienen la misma cantidad de conexiones" ~:
+    [("Mardel", "Neco", 2.0), ("BsAs", "La Plata", 2.0), ("Madrid", "Roma", 4.0), ()] ~?= Roma
+    ]
 
 -- testing 5
 -- solo es true directo o con A LO SUMO una escala
