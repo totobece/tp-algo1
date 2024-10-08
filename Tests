@@ -34,13 +34,12 @@ testsEjciudadMasConectada = test [
 
 testsEjsePuedeLlegar = test [
     "Se puede llegar sin vuelos" ~: sePuedeLlegar [] ~?= False ,
-    "Se puede llegar en el mismo viaje" ~: sePuedeLlegar [("BsAs", "Mendoza", 5.0)] "BsAs" "Mendoza" ~?= True ,
-    "Se puede llegar directo" ~: sePuedeLlegar [("Necochea", "Mar del Plata", 2.0), ("Mar del Plata","BsAs", 2.0)] "Necochea" "BsAs" ~?= True ,
+    "Se puede llegar directo" ~: sePuedeLlegar [("BsAs", "Mendoza", 5.0)] "BsAs" "Mendoza" ~?= True ,
     "Se puede llegar caso verdadero con una escala" ~: sePuedeLlegar [("BsAs", "Rosario", 5.0), ("Rosario", "Córdoba", 5.0), ("Córdoba", "BsAs", 8.0)] "BsAs" "Córdoba" ~?= True ,
-    "Se puede llegar directo si hay multiples vuelos" ~: [("Necochea", "Bahia Blanca", 5.0), ("Rosario", "BsAs", 4.0), ("Bahia Blanca", "BsAs", 6.0)] "Necochea" "BsAs" ~?= True ,
-    "Se puede llegar directo y con escala" ~: [("Necochea", "Mar del Plata", 2.0), ("Mar del Plata", "Miramar", 5.0), ("Miramar", "Rio Grande", 4.0), ("Mar del Plata", "Rio Grande", 10.0)] "Necochea" "Rio Grande" ~?= True ,
+    "Se puede llegar con escala incluso hay vuelos que estorban de por medio" ~: [("Necochea", "Bahia Blanca", 5.0), ("Rosario", "BsAs", 4.0), ("Bahia Blanca", "BsAs", 6.0)] "Necochea" "BsAs" ~?= True ,
+    "Se puede llegar directo y con escala" ~: [("Mar del Plata", "Rio Grande", 10.0), ("Pinamar", "Miramar", 1.0), ("Rio Grande", "Miramar", 9.0), ("Mar del Plata", "Miramar", 1.0)] "Mar del Plata" "Miramar" ~?= True ,
     "Se puede llegar con escala iterando" ~: sePuedeLlegar [[("Tucuman", "Corrientes", 4.0), ("Tucuman", "Entre Rios", 3.0), ("Entre Rios", "BsAs", 5.0)] "Tucuman" "BsAs" ~?= True ,
-    "Se puede llegar pero necesito dos escalas" ~: sePuedeLlegar [("Miramar", "Pinamar", 1.0), ("Pinamar", "Mendoza"), ("Mendoza", "Cataratas", 6.0) ("Cataratas", "Cordoba", 5.0)] "Miramar" "Córdoba" ~?= False ,
+    "Se puede llegar caso falso porque necesito mas de una escala" ~: sePuedeLlegar [("Miramar", "Pinamar", 1.0), ("Pinamar", "Mendoza"), ("Mendoza", "Cataratas", 6.0) ("Cataratas", "Cordoba", 5.0)] "Miramar" "Córdoba" ~?= False ,
     "Se puede llegar a caso verdadero directo o con escala" ~: sePuedeLlegar [("Tucuman", "Corrientes", 4.0), ("Mar del Plata", "Entre Rios", 3.0), ("Entre Rios", "BsAs", 5.0)] "Tucuman" "BsAs" ~?= False 
     ]
 
