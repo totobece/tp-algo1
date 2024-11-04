@@ -70,42 +70,28 @@ modernizarVuelos ((origen, destino, duracion):vuelos) = (origen, destino, duraci
 -- EJERCICIO 4
 
 
---Esta funcion toma datos de tipo AgenciaDeViajes y llama a la lista ciudadMayorApariciones enviandole como parametro (listaConcatenadaCiudadApariciones vuelos) que es una lista tipo [("Rosario",2)]
+--Aca llamamos a ciudadMayorApariciones enviandole una lista de vuelos [("A","B",4.0)] con otra lista que recursiona en la misma formando ["A","B"]
 ciudadMasConectada :: AgenciaDeViajes -> Ciudad
-ciudadMasConectada [(x,y,z)] = x  
-ciudadMasConectada vuelos = ciudadMayorApariciones (listaConcatenadaCiudadApariciones vuelos)
+ciudadMasConectada [] = []  
+ciudadMasConectada vuelos = ciudadMayorApariciones vuelos (transformarLista vuelos)
 
---Esta funcion toma una lista tipo [("Rosario",2),("BsAs", 3)] y recursiona para que ciudad tiene mas apariciones (ciudad,apariciones)
-ciudadMayorApariciones :: [(Ciudad,Int)] -> Ciudad
-ciudadMayorApariciones [(ciudad,apariciones)] = ciudad
-ciudadMayorApariciones ((ciudadA,aparicionesA):(ciudadB,aparicionesB):resto) 
-    | aparicionesA > aparicionesB = ciudadMayorApariciones ((ciudadA,aparicionesA):resto)
-    | otherwise = ciudadMayorApariciones ((ciudadB,aparicionesB):resto)
+--Transforma una lista de vuelos [("A","C",4.0),("C","D",4.0)] ["A","B","C","D"]
+transformarLista :: AgenciaDeViajes -> [Ciudad]
+transformarLista [] = []
+transformarLista ((ciudad1,ciudad2,_):vuelos) = ciudad1 :ciudad2 :transformarLista vuelos
 
---Aca llamamos a concatenarCiudadApariciones enviandole una lista ordenada de ciudades ["Rosario","Jujuy"]
-listaConcatenadaCiudadApariciones :: AgenciaDeViajes -> [(Ciudad,Int)]
-listaConcatenadaCiudadApariciones [] = []
-listaConcatenadaCiudadApariciones vuelos = concatenarCiudadApariciones (transformarLista vuelos) 
-    where   
-        --Esta funcion toma datos de tipo AgenciaDeViajes, la cual transforma en una lista de ciudades [("Rosario","Jujuy",5.0)] => ["Rosario","Jujuy"]
-        transformarLista :: AgenciaDeViajes -> [Ciudad]
-        transformarLista [] = []
-        transformarLista ((ciudad1,ciudad2,_):vuelos) = ciudad1 :ciudad2 :transformarLista vuelos
-
---Toma una lista de ciudades y crea una tupla con el primer elemento de la lista y con la cantidad de veces que aparece [("Rosario",2),("BsAs", 3)] y concatena la recursion.
-concatenarCiudadApariciones :: [Ciudad] -> [(Ciudad,Int)]
-concatenarCiudadApariciones [] = []
-concatenarCiudadApariciones (ciudad:ciudades) = (ciudad,contarApariciones ciudad (ciudad:ciudades) ) : concatenarCiudadApariciones ciudades 
-
---Toma una ciudad y recursiona en toda la lista para devolver la cantidad de veces que aparece.
-contarApariciones :: Ciudad -> [Ciudad] -> Int
-contarApariciones _ []  = 0
-contarApariciones lugar (ciudad:ciudades)
-    |  lugar == ciudad = 1 + contarApariciones lugar ciudades 
-    |  otherwise = contarApariciones lugar ciudades 
-
+--Calcula la longitud de una lista pasando una ciudad por ciudadesConectadas en vuelosCompletos
+--[("A","C",4.0),("C","D",4.0)] "C" ["A","D"]
+--Entonces la ciudad que pasa por ciudadesConectada con mayor longitud de lista es la ciudad que mas veces aparece.
+ciudadMayorApariciones :: AgenciaDeViajes -> [Ciudad] -> Ciudad
+ciudadMayorApariciones _ [ciudad] = ciudad
+ciudadMayorApariciones vuelosCompletos (ciudad1:ciudad2:resto)
+    | length(ciudadesConectadas vuelosCompletos ciudad1) >= length(ciudadesConectadas vuelosCompletos ciudad2) = ciudadMayorApariciones vuelosCompletos (ciudad1:resto)
+    | otherwise = ciudadMayorApariciones vuelosCompletos (ciudad2:resto)
+    
 
 -- EJERCICIO 5
+
 
 vuelosSinDuracion :: AgenciaDeViajes -> [(Ciudad,Ciudad)]
 vuelosSinDuracion [] = []
@@ -125,7 +111,8 @@ sePuedeLlegarDirecto ((partida,llegada,_):vuelos) origen destino = (partida == o
 --Esta llama a la funcion compararVuelosEscala, en la cual verifica si se puede llegar en escala sino recursiona en la funcion.
 sePuedeLlegarEscala :: [(Ciudad,Ciudad)] -> AgenciaDeViajes -> Ciudad -> Ciudad -> Bool
 sePuedeLlegarEscala _ [] _ _ = False
-sePuedeLlegarEscala vuelosCompletos ((partida,llegada,_):vuelos) origen destino = (partida == origen && elem (llegada,destino) vuelosCompletos) || otherwise = sePuedeLlegarEscala vuelosCompletos vuelos origen destino
+sePuedeLlegarEscala vuelosCompletos ((partida,llegada,_):vuelos) origen destino = (partida == origen && elem (llegada,destino) vuelosCompletos) || sePuedeLlegarEscala vuelosCompletos vuelos origen destino
+
 
 -- EJERCICIO 6
 
@@ -134,13 +121,13 @@ sePuedeLlegarEscala vuelosCompletos ((partida,llegada,_):vuelos) origen destino 
 -- Considera tanto los vuelos directos como los que incluyen escalas.
 duracionDelCaminoMasRapido :: AgenciaDeViajes -> Ciudad -> Ciudad -> Duracion
 duracionDelCaminoMasRapido vuelos origen destino = calcularMinimoLista (listasDuracionVuelosEscala vuelos vuelos origen destino ++ listaDuracionVuelosDirectos vuelos origen destino)
-    where
-        calcularMinimoLista :: [Duracion] -> Duracion
-        calcularMinimoLista [] = 0.0
-        calcularMinimoLista [x] = x
-        calcularMinimoLista (x:xs)
-            | x < calcularMinimoLista xs = x 
-            | otherwise = calcularMinimoLista xs 
+        
+calcularMinimoLista :: [Duracion] -> Duracion
+calcularMinimoLista [] = 0.0
+calcularMinimoLista [x] = x
+calcularMinimoLista (x:xs)
+    | x < calcularMinimoLista xs = x 
+    | otherwise = calcularMinimoLista xs 
 
 -- Genera una lista de las duraciones de los vuelos directos entre dos ciudades.
 listaDuracionVuelosDirectos :: AgenciaDeViajes -> Ciudad -> Ciudad -> [Duracion]
@@ -167,9 +154,9 @@ calcularDuracionVuelosEscala (partidaA,llegadaA,duracionA) ((partidaB,llegadaB,d
 
 --Usamos el mismo criterio que en el ejercicio 5, evaluamos si podemos volver al origen directamente o debemos volver en una escala.
 --Enviamos dos listas a cada funcion para que sea mas comodo trabajar. 
-puedeVolverAOrigen :: AgenciaDeViajes -> Ciudad ->  Bool
-puedeVolverAOrigen [] _ = False
-puedeVolverAOrigen vuelos origen = verificarVueloDirecto vuelos vuelos origen || verificarVueloConEscala vuelos vuelos origen
+puedoVolverAOrigen :: AgenciaDeViajes -> Ciudad ->  Bool
+puedoVolverAOrigen [] _ = False
+puedoVolverAOrigen vuelos origen = verificarVueloDirecto vuelos vuelos origen || verificarVueloConEscala vuelos vuelos origen
 
 -- Verifica si hay un vuelo directo que regrese a la ciudad de origen
 verificarVueloDirecto :: AgenciaDeViajes -> AgenciaDeViajes -> Ciudad -> Bool
