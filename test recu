@@ -1,0 +1,31 @@
+
+-- testing 3
+testsEjmodernizarFlota = test [
+    "flota modernizada sin elementos" ~: modernizarFlota [] ~?= [] ,
+    "flota modernizada con un elemento" ~: expectlistProximity (modernizarFlota [("Azul", "Bahia Blanca", 5.4)]) ["Azul", "Bahia Blanca", 4.86]
+    "flota modernizada con dos elementos" ~: expectlistProximity (modernizarFlota [("Ciudad1", "Ciudad2", 3.0), ("Ciudad3", "Ciudad4", 3.8)]) [("Ciudad1", "Ciudad2", 2.7), ("Ciudad3", "Ciudad4", 3.42)]
+    "flota modernizada con tres elementos" ~: expectlistProximity (modernizarFlota [("BsAs", "Rosario", 12.0), ("Necochea", "Mar del Plata", 3.0), ("Cataratas", "Rio Grande", 5.19)])
+    [("BsAs", "Rosario", 10.8), ("Necochea", "Mar del Plata", 2.7), ("Cataratas", "Rio Grande", 4.671)]
+       ]
+
+-- testing 6
+    testsEjduracionDelCaminoMasRapido = test [
+        "duracion del camino mas rapido con un solo vuelo directo" ~: duracionDelCaminoMasRapido [("Necochea", "Mar del Plata", 2.0)] "Necochea" "Mar del Plata" ~?= 2.0 ,
+        "duracion del camino mas rapido con un vuelo directo y uno con escala(gana directo)" ~: duracionDelCaminoMasRapido [("Neuquen", "Sta Rosa", 4.0), ("Sta Rosa", "Trelew", 3.0), ("Neuquen", "Trelew", 2.0)] "Neuquen" "Trelew" ~?= 2.0 ,
+        "duracion del camino mas rapido con un vuelo directo y uno con escala(gana escala)" ~: duracionDelCaminoMasRapido [("Neuquen", "Sta Rosa", 1.0), ("Sta Rosa", "Trelew", 2.0), ("Neuquen", "Trelew", 5.0)] "Neuquen" "Trelew" ~?= 3.0
+        "duración del camino más rápido con varias rutas válidas" ~: expectAny (duracionDelCaminoMasRapido [("BsAs", "Rosario", 3.0), ("BsAs", "Tandil", 2.0), ("Tandil", "Córdoba", 2.5), ("Rosario", "Córdoba", 4.0)] "BsAs" "Córdoba") [5.0, 6.0]
+        ]
+
+-- testing 7
+
+testsEjpuedoVolverAOrigen = test [
+        "puedo volver a origen con un vuelo" ~: puedoVolverAOrigen [("BsAs", "Mar del Plata", 4.0)] "BsAs" ~?= False ,
+        "puedo volver a origen caso verdadero directo" ~: puedoVolverAOrigen [("BsAs", "Necochea", 2.0), ("Necochea", "BsAs", 2.0)] "BsAs" ~?= True ,
+        "puedo volver a origen caso verdadero directo por mas de que haya otros viajes de por medio" ~: -- la recursión busca hasta encontrar un viaje que cumpla
+          puedoVolverAOrigen [("Necochea", "Tandil", 5.0), ("BsAs", "Necochea", 2.0), ("Tandil", "Azul", 2.0), ("Necochea", "BsAs", 2.0)] "BsAs" ~?= True ,
+        "puedo volver a origen caso verdadero con una escala" ~: puedoVolverAOrigen [("BsAs", "Rosario", 5.0), ("Rosario", "Córdoba", 5.0), ("Cordoba", "Mendoza", 3.0), ("Mendoza", "Rosario", 8.0)] "Rosario" ~?= True ,
+        "puedo volver a origen caso verdadero con más de una escala" ~: 
+          puedoVolverAOrigen [("BsAs", "Rosario", 3.0), ("Rosario", "Córdoba", 2.5), ("Córdoba", "Neuquén", 3.0), ("Neuquén", "BsAs", 4.0)] "BsAs" ~?= True ,
+        "puedo volver a origen caso falso en general" ~: -- puedo conectar varios viajes entre si y volver a otras ciudades pero ninguno me va a devolver a la ciudad de la que sali (BsAs)
+          puedoVolverAOrigen [("Madrid", "Roma", 5.0), ("Roma", "Madrid", 5.0), ("BsAs", "Mar del Plata", 4.0), ("Necochea", "Roma", 12.0), ("Mar del Plata", "Necochea", 2.0)] "BsAs" ~?= False ,
+     ]   
