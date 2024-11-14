@@ -25,7 +25,8 @@ testsEjvuelosValidos = test [
     "vuelos no valido con un elemento" ~: vuelosValidos [("BsAs", "BsAs", 1.0)] ~?= False,
     "vuelos valido con dos elementos" ~: vuelosValidos [("Neco", "Mardel", 3.0), ("Rosario", "BsAs", 4.0)] ~?= True,
     "vuelos no valido con dos elementos" ~: vuelosValidos [("Neco", "Mardel", 3.0), ("Neco", "Mardel", 3.0)] ~?= False,
-    "vuelos no valido porque tienen distinta duracion" ~: vuelosValidos [("Neco", "Mardel", 3.0), ("Neco", "Mardel", 4.0)] ~?= False
+    "vuelos no valido porque tienen distinta duracion" ~: vuelosValidos [("Neco", "Mardel", 3.0), ("Neco", "Mardel", 4.0)] ~?= False,
+     "vuelo no valido duracion negativa" ~: vuelosValidos [("Buenos Aires", "Córdoba", -2.0)] ~?= False
     ]
 
 testsEjciudadesConectadas = test [
@@ -36,7 +37,11 @@ testsEjciudadesConectadas = test [
     "ciudad sin conexiones" ~:
         ciudadesConectadas [("BsAs", "Rosario", 5.0)] "Cordoba" ~?= [],
     "ciudad conectada desde ambos lados" ~:
-        ciudadesConectadas [("BsAs", "Rosario", 5.0), ("Rosario", "BsAs", 3.5)] "Rosario" ~?= ["BsAs"]
+        expectPermutacion (ciudadesConectadas [("BsAs", "Rosario", 5.0), ("Rosario", "BsAs", 3.5)] "Rosario") ["BsAs"],
+    "ciudadesConectadas con varias conexiones duplicadas" ~:
+        expectPermutacion (ciudadesConectadas [("Neco", "Mardel", 3.0), ("Mardel", "BsAs", 4.0), ("BsAs", "Neco", 2.0)] "Neco") ["Mardel", "BsAs"],
+      "ciudad conectada con posibles rutas alternativas" ~:
+        expectAny (ciudadesConectadas [("Neco", "Mardel", 3.0), ("Mardel", "Neco", 3.0)] "Neco") [["Mardel"], ["BsAs", "Mardel"]]
     ]
 
 testsEjmodernizarFlota = test [
@@ -51,8 +56,21 @@ testsEjmodernizarFlota = test [
     ]
 
 testsEjciudadMasConectada = test [
-    "ciudad Mas conectada que aparece dos veces" ~: ciudadMasConectada [("BsAs", "Rosario", 10.0), ("Rosario", "Córdoba", 7.0)] ~?= "Rosario"
+   "ciudad más conectada con dos vuelos diferentes" ~: 
+        ciudadMasConectada [("Buenos Aires", "Rosario", 10.0), ("Rosario", "Córdoba", 7.0)] ~?= "Rosario",
+
+    "ciudad más conectada con múltiples vuelos" ~:
+        ciudadMasConectada [("Buenos Aires", "Rosario", 5.0), ("Rosario", "Córdoba", 3.5), ("Córdoba", "Mendoza", 4.0), ("Rosario", "Mendoza", 2.5)] ~?= "Rosario",
+    
+    "ciudad central con conexiones de varios puntos" ~:
+        ciudadMasConectada [("Mendoza", "Buenos Aires", 6.0), ("Córdoba", "Buenos Aires", 5.0), ("Rosario", "Buenos Aires", 4.5)] ~?= "Buenos Aires",
+
+    "ciudad sin conexiones (lista vacía)" ~:
+        ciudadMasConectada [] ~?= [],
+    "ciudad más conectada entre múltiples opciones válidas" ~:
+        expectAny (ciudadMasConectada [("Buenos Aires", "Rosario", 5.0), ("Rosario", "Córdoba", 5.0), ("Buenos Aires", "Córdoba", 3.0)]) ["Buenos Aires", "Rosario", "Córdoba"]
     ]
+
 
 testsEjsePuedeLlegar = test [
     "Se puede llegar caso verdadero con una escala" ~: sePuedeLlegar [("BsAs", "Rosario", 5.0), ("Rosario", "Córdoba", 5.0), ("Córdoba", "BsAs", 8.0)] "BsAs" "Córdoba" ~?= True
