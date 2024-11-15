@@ -1,3 +1,9 @@
+--Nombre grupo: somosdel_oeste8
+-- Integrantes: Tobias Becerra, DNI 45076860 Email tobias.bec1704@gmail.com
+--              Valentina Bolaños 44049734 Email valentinab19302@gmail.com 
+--              Luciano Gonzalez 47097965 Email lucianogonzalez160122@gmail.com
+--              (El alumno Maximiliano Alonso abandono la materia y fue reemplazado por Luciano Gonzalez)
+
 module Solucion where
 
 type Ciudad = String

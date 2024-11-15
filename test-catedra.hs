@@ -46,14 +46,29 @@ testsEjciudadesConectadas = test [
 
 testsEjmodernizarFlota = test [
     "flota modernizada sin elementos" ~: 
-        modernizarFlota [] ~?= [],
-    "flota modernizada con un elemento" ~:
-        modernizarFlota [("BsAs", "Rosario", 10.0)] ~?= [("BsAs", "Rosario", 9.0)],
-    "flota modernizada con dos elementos" ~:
-        modernizarFlota [("BsAs", "Rosario", 4.0), ("Necochea", "Mar del Plata", 2.0)] ~?= [("BsAs", "Rosario", 3.6), ("Necochea", "Mar del Plata", 1.8)],
-    "flota modernizada con tres elementos" ~:
-        modernizarFlota [("BsAs", "Rosario", 12.0), ("Necochea", "Mar del Plata", 3.0), ("Cataratas", "Rio Grande", 5.19)] ~?= [("BsAs", "Rosario", 10.8), ("Necochea", "Mar del Plata", 2.7), ("Cataratas", "Rio Grande", 4.671)]
+        modernizarFlota [] ~?= [] ,
+
+    "flota modernizada con un elemento" ~: 
+        expectlistProximity 
+            [dur | (_, _, dur) <- modernizarFlota [("Azul", "Bahia Blanca", 5.19)]]
+            [4.671],
+
+    "flota modernizada con dos elementos" ~: 
+        expectlistProximity 
+            [dur | (_, _, dur) <- modernizarFlota 
+                [("Azul", "Bahia Blanca", 5.19), ("Necochea", "Mar del Plata", 3.0)]]
+            [4.671, 2.7],
+
+    "flota modernizada con tres elementos" ~: 
+        expectlistProximity 
+            [dur | (_, _, dur) <- modernizarFlota 
+                [("Azul", "Bahia Blanca", 5.19), 
+                 ("Necochea", "Mar del Plata", 3.0), 
+                 ("Cataratas", "Rio Grande", 12.0)]]
+            [4.671, 2.7, 10.8]
     ]
+
+
 
 testsEjciudadMasConectada = test [
    "ciudad más conectada con dos vuelos diferentes" ~: 
@@ -73,16 +88,42 @@ testsEjciudadMasConectada = test [
 
 
 testsEjsePuedeLlegar = test [
-    "Se puede llegar caso verdadero con una escala" ~: sePuedeLlegar [("BsAs", "Rosario", 5.0), ("Rosario", "Córdoba", 5.0), ("Córdoba", "BsAs", 8.0)] "BsAs" "Córdoba" ~?= True
+    "Se puede llegar sin vuelos" ~: sePuedeLlegar [] "BsAs" "Mendoza" ~?= False,
+    "Se puede llegar directo" ~: sePuedeLlegar [("BsAs", "Mendoza", 5.0)] "BsAs" "Mendoza" ~?= True,
+    "Se puede llegar caso verdadero con una escala" ~: 
+        sePuedeLlegar [("BsAs", "Rosario", 5.0), ("Rosario", "Córdoba", 5.0), ("Córdoba", "BsAs", 8.0)] "BsAs" "Córdoba" ~?= True,
+    "Se puede llegar con escala incluso si hay vuelos que estorban de por medio" ~: 
+        sePuedeLlegar [("Necochea", "Bahia Blanca", 5.0), ("Rosario", "BsAs", 4.0), ("Bahia Blanca", "BsAs", 6.0)] "Necochea" "BsAs" ~?= True,
+    "Se puede llegar directo y con escala" ~: 
+        sePuedeLlegar [("Mar del Plata", "Rio Grande", 10.0), ("Pinamar", "Miramar", 1.0), ("Rio Grande", "Miramar", 9.0), ("Mar del Plata", "Miramar", 1.0)] "Mar del Plata" "Miramar" ~?= True,
+    "Se puede llegar con escala iterando" ~: 
+        sePuedeLlegar [("Tucuman", "Corrientes", 4.0), ("Tucuman", "Entre Rios", 3.0), ("Entre Rios", "BsAs", 5.0)] "Tucuman" "BsAs" ~?= True,
+    "Se puede llegar caso falso porque necesito más de una escala" ~: 
+        sePuedeLlegar [("Miramar", "Pinamar", 1.0), ("Pinamar", "Mendoza", 3.0), ("Mendoza", "Cataratas", 6.0), ("Cataratas", "Cordoba", 5.0)] "Miramar" "Córdoba" ~?= False,
+    "Se puede llegar a caso verdadero directo o con escala" ~: 
+        sePuedeLlegar [("Tucuman", "Corrientes", 4.0), ("Mar del Plata", "Entre Rios", 3.0), ("Entre Rios", "BsAs", 5.0)] "Tucuman" "BsAs" ~?= False
     ]
 
+
 testsEjduracionDelCaminoMasRapido = test [
-    "duración del camino más rápido con una escala" ~: duracionDelCaminoMasRapido [("BsAs", "Rosario", 5.0), ("Rosario", "Córdoba", 5.0), ("Córdoba", "BsAs", 8.0)] "BsAs" "Córdoba" ~?= 10.0
+        "duracion del camino mas rapido con un solo vuelo directo" ~: duracionDelCaminoMasRapido [("Necochea", "Mar del Plata", 2.0)] "Necochea" "Mar del Plata" ~?= 2.0 ,
+        "duracion del camino mas rapido con un vuelo directo y uno con escala(gana directo)" ~: duracionDelCaminoMasRapido [("Neuquen", "Sta Rosa", 4.0), ("Sta Rosa", "Trelew", 3.0), ("Neuquen", "Trelew", 2.0)] "Neuquen" "Trelew" ~?= 2.0 ,
+        "duracion del camino mas rapido con un vuelo directo y uno con escala(gana escala)" ~: duracionDelCaminoMasRapido [("Neuquen", "Sta Rosa", 1.0), ("Sta Rosa", "Trelew", 2.0), ("Neuquen", "Trelew", 5.0)] "Neuquen" "Trelew" ~?= 3.0,
+        "duración del camino más rápido con varias rutas válidas" ~: expectAny (duracionDelCaminoMasRapido [("BsAs", "Rosario", 3.0), ("BsAs", "Tandil", 2.0), ("Tandil", "Córdoba", 2.5), ("Rosario", "Córdoba", 4.0)] "BsAs" "Córdoba") [5.0, 6.0]
     ]
 
 testsEjpuedoVolverAOrigen = test [
-        "puedo volver a origen caso verdadero con una escala" ~: puedoVolverAOrigen [("BsAs", "Rosario", 5.0), ("Rosario", "Córdoba", 5.0), ("Córdoba", "BsAs", 8.0)] "BsAs" ~?= True
-    ]
+        "puedo volver a origen con un vuelo" ~: puedoVolverAOrigen [("BsAs", "Mar del Plata", 4.0)] "BsAs" ~?= False ,
+        "puedo volver a origen caso verdadero directo" ~: puedoVolverAOrigen [("BsAs", "Necochea", 2.0), ("Necochea", "BsAs", 2.0)] "BsAs" ~?= True ,
+        "puedo volver a origen caso verdadero directo por mas de que haya otros viajes de por medio" ~: -- la recursión busca hasta encontrar un viaje que cumpla
+          puedoVolverAOrigen [("Necochea", "Tandil", 5.0), ("BsAs", "Necochea", 2.0), ("Tandil", "Azul", 2.0), ("Necochea", "BsAs", 2.0)] "BsAs" ~?= True ,
+        "puedo volver a origen caso verdadero con una escala" ~: puedoVolverAOrigen [("BsAs", "Rosario", 5.0), ("Rosario", "Córdoba", 5.0), ("Cordoba", "Mendoza", 3.0), ("Mendoza", "Rosario", 8.0)] "Rosario" ~?= True ,
+        "puedo volver a origen caso verdadero con más de una escala" ~: 
+          puedoVolverAOrigen [("BsAs", "Rosario", 3.0), ("Rosario", "Córdoba", 2.5), ("Córdoba", "Neuquén", 3.0), ("Neuquén", "BsAs", 4.0)] "BsAs" ~?= True ,
+        "puedo volver a origen caso falso en general" ~: -- puedo conectar varios viajes entre si y volver a otras ciudades pero ninguno me va a devolver a la ciudad de la que sali (BsAs)
+          puedoVolverAOrigen [("Madrid", "Roma", 5.0), ("Roma", "Madrid", 5.0), ("BsAs", "Mar del Plata", 4.0), ("Necochea", "Roma", 12.0), ("Mar del Plata", "Necochea", 2.0)] "BsAs" ~?= False
+    ]   
+
 
 
 
